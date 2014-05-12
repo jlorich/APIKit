@@ -13,4 +13,5 @@ Pod::Spec.new do |s|
   s.dependency 'AFNetworking', '~> 2.0.3'
   s.dependency 'Inflections', '~> 1.0.0'
   s.dependency 'MAObjCRuntime', '~> 0.0'
+  s.dependency 'MagicalRecord', :git => 'https://github.com/magicalpanda/MagicalRecord', :commit => '98ec121bf767c495a2e887adeade7383b74a62f4'
 end
