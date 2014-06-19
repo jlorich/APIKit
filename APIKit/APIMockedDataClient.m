@@ -134,8 +134,16 @@
 - (void)loadMockData
 {
     NSBundle *mainBundle = [NSBundle mainBundle];
-    NSArray *fixturePaths = [mainBundle pathsForResourcesOfType:@"json" inDirectory:nil];
+	
+	// Add the Fixtures directory as a Folder Reference to the Mocked Target and this will find it
+    NSArray *fixturePaths = [mainBundle pathsForResourcesOfType:@"json" inDirectory:@"Fixtures"];
     
+	// If we got no result grab all the JSON
+	if (fixturePaths == nil || fixturePaths.count == 0)
+	{
+		fixturePaths = [mainBundle pathsForResourcesOfType:@"json" inDirectory:nil];
+	}
+	
     for (NSString *path in fixturePaths)
     {
         [self loadMockDataForFixtureAtPath:path];
@@ -171,15 +179,18 @@
 {
     for (NSDictionary *pair in fixtures)
     {
-        APIMockRequest *request = [self mockRequestFromFixture:pair[@"request"] withPath:requestPath];
-        APIMockResponse *response = [self mockResponseFromFixture:pair[@"response"]];
-        
-        request.response = response;
-        response.request = request;
-        
-        [_mockRequests addObject:request];
+		/// Make sure it actually is a dictionary and has the appropriate keys
+		if ([pair isKindOfClass:[NSDictionary class]] && pair[@"request"] != nil && pair[@"response"] != nil)
+		{
+			APIMockRequest *request = [self mockRequestFromFixture:pair[@"request"] withPath:requestPath];
+			APIMockResponse *response = [self mockResponseFromFixture:pair[@"response"]];
+			
+			request.response = response;
+			response.request = request;
+			
+			[_mockRequests addObject:request];
+		}
     }
-}
 
 /**
  * Builds an APIMockRequest based on the given request data and path
