@@ -191,6 +191,7 @@
 			[_mockRequests addObject:request];
 		}
     }
+}
 
 /**
  * Builds an APIMockRequest based on the given request data and path
