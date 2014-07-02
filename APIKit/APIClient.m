@@ -105,6 +105,27 @@ static APIClient *sharedInstance = nil;
     [_requestManager.operationQueue addOperation:operation];
 }
 
+- (void) requestURL:(NSURL *)url
+			asRoute:(NSString *)routeName
+		 parameters:(NSDictionary *)parameters
+			success:(APISuccessBlock)success
+			failure:(APIFailureBlock)failure
+{
+	NSString *requestMethodString = [[APIRouter shared] methodStringFor:routeName];
+	NSMutableURLRequest *request = [self requestWithMethod:requestMethodString
+													   URL:url
+												parameters:parameters];
+	
+	
+	AFSuccessBlock afSuccess = [self translateAFSuccessBlock:success];
+	AFFailureBlock afFailure = [self translateAFFailureBlock:failure];
+	
+	AFHTTPRequestOperation *operation = [_requestManager HTTPRequestOperationWithRequest:request
+																				 success:afSuccess
+																				 failure:afFailure];
+	[_requestManager.operationQueue addOperation:operation];
+}
+
 - (void)cancelOperationsForRoute:(NSString *)routeName parameters:(NSDictionary *)parameters
 {
     APIRouter *router = [APIRouter shared];

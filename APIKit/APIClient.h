@@ -73,6 +73,11 @@ typedef void (^APIFailureBlock)(id responseObject, NSInteger httpStatus, NSError
               failure:(APIFailureBlock)failure;
 
 /**
+ * Makes a request to a direct full URL, treating it as route "routeName"
+ */
+- (void)requestURL:(NSURL *)url asRoute:(NSString *)routeName parameters:(NSDictionary *)parameters success:(APISuccessBlock)success failure:(APIFailureBlock)failure;
+
+/**
  * Cancels all pending requests to given route
  *
  * @param routeName The route name to cancel requests by

@@ -87,12 +87,13 @@
     {
         id value = [params valueForKey:param];
         
-        NSString *paramType = NSStringFromClass([value class]);
-        
-        if ([paramType isEqualToString:@"NSString"])
+		// Check that it conforms to the class, not by string name or we won't work with subclasses or base classes like _NSCFString
+        if ([value isKindOfClass:[NSString class]])
         {
             NSString *token = [NSString stringWithFormat:@":%@", param];
-            [parsedString stringByReplacingOccurrencesOfString:token withString:value];
+			
+			// Replace the token in the mutableString in place
+			[parsedString replaceOccurrencesOfString:token withString:value options:NSLiteralSearch range:NSMakeRange(0, parsedString.length)];
         }
     }
     
