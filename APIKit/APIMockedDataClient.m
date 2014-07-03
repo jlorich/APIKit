@@ -68,6 +68,13 @@
     }
 }
 
+/**
+ * On the mock just pass this back to the normal requestRoute
+ */
+- (void)requestURL:(NSURL *)url asRoute:(NSString *)routeName parameters:(NSDictionary *)parameters success:(APISuccessBlock)success failure:(APIFailureBlock)failure
+{
+	[self requestRoute:routeName parameters:parameters success:success failure:failure];
+}
    
 #pragma mark - Private methods
    
