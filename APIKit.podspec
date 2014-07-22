@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "APIKit"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.summary      = "A toolkit to help with API interfaceing."
   s.homepage     = "https://github.com/jlorich/APIKit.git"
   s.license      = "MIT"
