@@ -43,6 +43,12 @@ typedef void (^APIFailureBlock)(id responseObject, NSInteger httpStatus, NSError
 @interface APIClient : NSObject
 
 
+#pragma mark - Properties
+
+/// The HTTP Authorization header bearer token to be appended to outgoing requests
+@property (nonatomic, retain) NSString *authorizationBearerToken;
+
+
 #pragma mark - Class methods
 
 /**

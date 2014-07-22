@@ -48,14 +48,19 @@ static dispatch_once_t pred;
 static APIClient *sharedInstance = nil;
 
 
+#pragma mark - APIClient Interface
+
+@interface APIClient()
+
+/// The AFNetworking request operation manager used to make requests
+@property (nonatomic, retain) AFHTTPRequestOperationManager *requestManager;
+
+@end
+
 
 #pragma mark - APIClient Implementation
 
 @implementation APIClient
-{
-    /// The AFNetworking request operation manager used to make requests
-    AFHTTPRequestOperationManager *_requestManager;
-}
 
 
 #pragma mark - Public Methods
@@ -176,7 +181,19 @@ static APIClient *sharedInstance = nil;
                                                               URLString:[url absoluteString]
                                                              parameters:parameters];
     
+    [self addBearerTokenToRequest:request token:self.authorizationBearerToken];
+    
     return request;
+}
+
+/**
+ * Adds a bearer token to the given NSMutableURLRequest
+ */
+- (void) addBearerTokenToRequest:(NSMutableURLRequest *)request token:(NSString *)token {
+    if (token) {
+        NSString *headerValue = [NSString stringWithFormat:@"Bearer %@", token];
+        [request setValue:headerValue forHTTPHeaderField:@"Authorization"];
+    }
 }
 
 /**
