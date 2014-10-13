@@ -87,6 +87,20 @@ static APIClient *sharedInstance = nil;
     sharedInstance = sharedClient;
 }
 
+- (void) setRequestSerializationType:(APISerializationType)requestSerializationType {
+    _requestSerializationType = requestSerializationType;
+    
+    switch (requestSerializationType) {
+        case APIJSONSerialization:
+            self.requestManager.requestSerializer = [AFJSONRequestSerializer serializer];
+            break;
+        case APIPropertyListSerialization:
+            self.requestManager.requestSerializer = [AFPropertyListRequestSerializer serializer];
+            break;
+        default:
+            self.requestManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    }
+}
 
 - (void) requestRoute:(NSString*)routeName
            parameters:(NSDictionary *)parameters
@@ -159,6 +173,7 @@ static APIClient *sharedInstance = nil;
     if (self)
     {
         _requestManager = [AFHTTPRequestOperationManager manager];
+        self.requestSerializationType = APIJSONSerialization;
     }
     
     return self;
