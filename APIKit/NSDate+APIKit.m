@@ -10,24 +10,41 @@
 
 @implementation NSDate (APIKit)
 
+-(NSDate *) toLocalTime
+{
+    NSTimeZone *tz = [NSTimeZone defaultTimeZone];
+    NSInteger seconds = [tz secondsFromGMTForDate: self];
+    return [NSDate dateWithTimeInterval: seconds sinceDate: self];
+}
+
+-(NSDate *) toGlobalTime
+{
+    NSTimeZone *tz = [NSTimeZone defaultTimeZone];
+    NSInteger seconds = -[tz secondsFromGMTForDate: self];
+    return [NSDate dateWithTimeInterval: seconds sinceDate: self];
+}
+
 + (NSDate *)dateFromAPIDateString:(NSString*)dateString
 {
-    // Ignore nil dates
-    if (dateString == nil) return nil;
+    NSString *dateFormat = [self apiDateFormatForDateString:dateString];
     
+    return [self adjustedDateFromAPIDateString:dateString toZone:[NSTimeZone timeZoneWithName:@"UTC"] withFormat:dateFormat];
+}
+
++ (NSDate *)adjustedDateFromAPIDateString:(NSString*)dateString toZone:(NSString *)timeZoneName {
+  NSString *dateFormat = [self apiDateFormatForDateString:dateString];
+  NSTimeZone *zone = [NSTimeZone timeZoneWithName:timeZoneName];
+ 
+  return [self adjustedDateFromAPIDateString:dateString toZone:zone withFormat:dateFormat];
+}
+
++ (NSDate *)adjustedDateFromAPIDateString:(NSString*)dateString toZone:(NSTimeZone *)timeZone withFormat:(NSString *)format {
+    if (!dateString) { return nil; }
+
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     
-    if ([dateString rangeOfString:@"T"].location == NSNotFound)
-    {
-        // Ain't nobody got time for that
-        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    }
-    else
-    {
-        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
-    }
-    
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:format];
     
     return [dateFormatter dateFromString:dateString];
 }
@@ -36,13 +53,26 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
     
-    [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [formatter setTimeZone:[NSTimeZone localTimeZone]];
     
     return [formatter stringFromDate:date];
 }
 
 - (NSString *)toAPIString {
     return [NSDate apiStringFromDate:self];
+}
+
++ (NSString *)apiDateFormatForDateString:(NSString *)dateString {
+    if (dateString == nil) {
+        return @"";
+    } else if([dateString rangeOfString:@" "].location != NSNotFound) {
+        return @"yyyy-MM-dd'T'HH:mm:ss.SSS Z";
+    } else if ([dateString rangeOfString:@"T"].location != NSNotFound) {
+        return @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    } else {
+        return @"yyyy-MM-dd";
+
+    }
 }
 
 
