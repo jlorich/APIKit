@@ -248,4 +248,13 @@ static APIClient *sharedInstance = nil;
     };
 }
 
+#pragma mark - AFNetworking Default Header Methods
+- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field {
+    [self.requestManager.requestSerializer setValue:value forHTTPHeaderField:field];
+}
+
+- (NSString *)valueForHTTPHeaderField:(NSString *)field {
+    return [self.requestManager.requestSerializer valueForHTTPHeaderField:field];
+}
+
 @end

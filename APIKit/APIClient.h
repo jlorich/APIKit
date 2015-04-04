@@ -104,4 +104,21 @@ typedef NS_ENUM(NSInteger, APISerializationType) {
  */
 - (void)cancelOperationsForRoute:(NSString *)routeName  parameters:(NSDictionary *)parameters;
 
+/**
+ * Sets the value for the HTTP headers set in request objects made by the HTTP client. If `nil`, removes the existing value for that header.
+ *
+ * @param field The HTTP header to set a default value for
+ * @param value The value set as default for the specified header, or `nil`
+ */
+- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field;
+
+/**
+ * Returns the value for the HTTP headers set in the request serializer.
+ *
+ * @param field The HTTP header to retrieve the default value for
+ *
+ * @return The value set as default for the specified header, or `nil`
+ */
+- (NSString *)valueForHTTPHeaderField:(NSString *)field;
+
 @end
